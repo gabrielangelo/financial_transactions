@@ -7,6 +7,7 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
   alias FinancialTransactions.Accounts.Transaction
   alias FinancialTransactions.Tasks.{MakeTransfer, MakeWithdraw}
   alias FinancialTransactions.Users.User
+  alias FinancialTransactions.Companies.Company
 
   import Ecto.Query, only: [from: 2]
 
@@ -32,6 +33,7 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
   defp unpack_amounts(attrs) do
     case Map.pop(attrs, :amounts) do
       {nil, attrs} -> Map.pop(attrs, "amounts")
+      {amounts, transaction_changeset} -> {amounts, transaction_changeset}
     end
 
   end
@@ -39,25 +41,27 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
   def user_accounts(user) do
     user
     |>  Repo.preload(
-      [accounts: from(a in FinancialTransactions.Accounts.Account, select: a.id)]
+      [accounts: from(a in FinancialTransactions.Accounts.Account, where: a.is_active == true, select: a.id)]
     )
     |> Map.get(:accounts)
   end
 
-  def run(attrs, user \\ %User{}) do
+  def run(attrs, user \\ %User{}, company \\ %Company{}) do
     {amount_attrs, transacion_attrs} = unpack_amounts(attrs)
 
     transaction_changeset = transaction_changeset(transacion_attrs)
 
     if transaction_changeset.valid? do
       user_accounts_ids = Enum.map(user.accounts, fn account -> account.id end)
+      company_accounts = Map.get(company, :accounts, [])
+      company_account_ids = Enum.map(company_accounts, fn account -> account.id end)
 
       cond do
-        transaction_changeset.changes.from_account_id not in user_accounts_ids ->
+        transaction_changeset.changes.from_account_id not in user_accounts_ids ++ company_account_ids->
           {:error, Ecto.Changeset.add_error(
             transaction_changeset,
             :from_account_id,
-            "Accoutn doesn't belong to request user")
+            "Account doesn't belong to request user")
           }
 
         amount_attrs == nil || amount_attrs == [] ->
