@@ -1,5 +1,4 @@
 defmodule FinancialTransactions.Tasks.MakeWithdraw do
-  alias FinancialTransactions.Repo
   alias FinancialTransactions.Common, as: Common
   alias FinancialTransactions.Tasks.Managers, as: Manager
 
@@ -14,8 +13,6 @@ defmodule FinancialTransactions.Tasks.MakeWithdraw do
         amount_attrs,
         from_account
       )
-      |> Repo.transaction
-
     end
 
   end

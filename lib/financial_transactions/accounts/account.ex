@@ -8,7 +8,7 @@ defmodule FinancialTransactions.Accounts.Account do
   schema "accounts" do
     field :name, :string
     field :current_balance, :decimal, default: 0.0
-    field :is_active, :boolean, default: false
+    field :is_active, :boolean, default: true
 
     # associations
     belongs_to :user, FinancialTransactions.Users.User

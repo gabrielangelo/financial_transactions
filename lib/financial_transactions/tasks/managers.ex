@@ -25,7 +25,7 @@ defmodule FinancialTransactions.Tasks.Managers do
       %{current_balance: Decimal.sub(from_account.current_balance, transaction.value)}
     ))
 
-    |> Multi.update(:transaction_update, Common.update_transaction_amounts_changeset(
+    |> Multi.update(:transaction_status_update, Common.update_transaction_amounts_changeset(
         transaction,
         %{amounts: amount_attrs, status: 1}
       )

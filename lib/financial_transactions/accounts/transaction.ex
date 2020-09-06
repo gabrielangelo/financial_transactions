@@ -30,7 +30,7 @@ defmodule FinancialTransactions.Accounts.Transaction do
   def changeset(%__MODULE__{} = transaction, attrs \\ %{}) do
     transaction
     |> cast(attrs, @fields ++ @assoc_ids)
-    |> validate_required([:description, :amounts, :value, :from_account_id])
+    |> validate_required([:description, :amounts, :value, :from_account_id, :type])
     |> validate_inclusion(:type, @transaction_types)
     |> foreign_key_constraint(:from_account_id)
     |> foreign_key_constraint(:to_account_id)

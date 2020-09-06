@@ -22,12 +22,12 @@ defmodule FinancialTransactions.AccountsTest do
 
     test "list_accounts/0 returns all accounts" do
       account = account_without_user_fixture()
-      assert Accounts.list_accounts() == []
+      assert Accounts.list_accounts() == [account]
     end
 
     test "get_account!/1 returns the account with given id" do
       account = account_without_user_fixture()
-      assert_raise Ecto.NoResultsError, fn -> Accounts.get_account!(account.id) == account end
+      assert Accounts.get_account!(account.id) == account
 
     end
 

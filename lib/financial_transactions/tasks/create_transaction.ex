@@ -9,8 +9,6 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
   alias FinancialTransactions.Users.User
   alias FinancialTransactions.Companies.Company
 
-  import Ecto.Query, only: [from: 2]
-
   defp transaction_changeset(attrs) do
     %Transaction{}
     |> Transaction.changeset(attrs)
@@ -38,14 +36,6 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
 
   end
 
-  def user_accounts(user) do
-    user
-    |>  Repo.preload(
-      [accounts: from(a in FinancialTransactions.Accounts.Account, where: a.is_active == true, select: a.id)]
-    )
-    |> Map.get(:accounts)
-  end
-
   def run(attrs, user \\ %User{}, company \\ %Company{}) do
     {amount_attrs, transacion_attrs} = unpack_amounts(attrs)
 
@@ -53,11 +43,14 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
 
     if transaction_changeset.valid? do
       user_accounts_ids = Enum.map(user.accounts, fn account -> account.id end)
-      company_accounts = Map.get(company, :accounts, [])
-      company_account_ids = Enum.map(company_accounts, fn account -> account.id end)
+
+      company_account_ids = company
+      |> Repo.preload(:accounts)
+      |> Map.get(:accounts, [])
+      |> Enum.map(&(&1.id))
 
       cond do
-        transaction_changeset.changes.from_account_id not in user_accounts_ids ++ company_account_ids->
+        transaction_changeset.changes.from_account_id not in user_accounts_ids ++ company_account_ids ->
           {:error, Ecto.Changeset.add_error(
             transaction_changeset,
             :from_account_id,
@@ -74,7 +67,9 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
         {:ok, transaction} = transaction_changeset |> Repo.insert ->
           case process_transaction(transaction, amount_attrs) do
             {:ok, transaction_items} -> {:ok, transaction_items}
+
             {:error, %Ecto.Changeset{} = changeset} -> {:error, changeset}
+
             {:error, :invalid_balance} -> {:error, :invalid_balance}
           end
       end

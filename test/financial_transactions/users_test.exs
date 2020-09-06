@@ -2,47 +2,14 @@ defmodule FinancialTransactions.UsersTest do
   use FinancialTransactions.DataCase
 
   alias FinancialTransactions.Users
-  alias FinancialTransactions.Companies.Company
+  import FinancialTransactions.TestHelpers
 
   describe "users" do
 
-    @user_with_account_attrs %{
-      email: "test@gmail.com",
-      first_name: "John",
-      last_name: "Doe",
-      password: "123456Gg",
-      accounts: [
-        %{
-          name: "account with user",
-        },
-      ],
-    }
-
-    @user_with_invalid_email %{
-      email: "whatever",
-      first_name: "John",
-      last_name: "Doe",
-      password: "123456Gg"
-    }
-
     @initial_value Decimal.from_float(1000.0)
 
-    @companie_attrs %{
-      name: "stone",
-      accounts: [
-        %{name: "stone account", current_balance: Decimal.new(1000000000000000000000)},
-      ],
-    }
-    @invalid_attrs %{email: nil, first_name: nil, last_name: nil, password_hash: nil}
-
-    def company_fixture() do
-      {:ok, company} =
-      %Company{}
-      |> Company.changeset(@companie_attrs)
-      |> Repo.insert
-
-      company |> Repo.preload(:accounts)
-    end
+    @user_with_account_attrs build_attrs(:user_with_account)
+    @user_with_invalid_email build_attrs(:user_with_invalid_email)
 
     test "test the basic user creation with associated account which initial balance starts with R$1000.0" do
       company_fixture()
@@ -62,13 +29,14 @@ defmodule FinancialTransactions.UsersTest do
     test "test invalid email input" do
       {:error, changeset} = Users.create_user(@user_with_invalid_email)
       assert changeset.valid? == false
-      [{:email, _}] = changeset.errors
+      [email: _] = changeset.errors
     end
 
     test "test user creation without main company account" do
+
       {:error, changeset} = Users.create_user(@user_with_account_attrs)
       assert changeset.valid? == false
-      [{:from_account_id, _}] = changeset.errors
+      [from_account_id: _] = changeset.errors
     end
 
     test "test unique user email constraint" do
@@ -76,7 +44,7 @@ defmodule FinancialTransactions.UsersTest do
       Users.create_user(@user_with_account_attrs)
       {:error, changeset} = Users.create_user(@user_with_account_attrs)
       assert changeset.valid? == false
-      [{:email, _}] = changeset.errors
+      [email: _] = changeset.errors
     end
 
   end
