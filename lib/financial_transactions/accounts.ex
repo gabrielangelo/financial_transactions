@@ -18,7 +18,7 @@ defmodule FinancialTransactions.Accounts do
 
   """
   def list_accounts do
-    Repo.all(Account)
+    Repo.all(from(a in Account, where: a.is_active == true))
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule FinancialTransactions.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_account!(id), do: Repo.get!(Account, id)
+  def get_account!(id), do: Repo.get_by!(Account, [id: id, is_active: true])
 
   @doc """
   Creates a account.
@@ -86,7 +86,9 @@ defmodule FinancialTransactions.Accounts do
 
   """
   def delete_account(%Account{} = account) do
-    Repo.delete(account)
+    account
+    |> Account.changeset(%{is_active: false})
+    |> Repo.update()
   end
 
   @doc """
