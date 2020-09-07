@@ -66,11 +66,11 @@ defmodule FinancialTransactions.Accounts.Transaction do
     cond do
       (
         get_field(changeset, :is_external) == true
-        && get_field(changeset, :to_account) != nil
+        && get_field(changeset, :to_account_id) != nil
       ) -> add_error(changeset, :is_external, "external transaction cannot have to_account_id field")
       (
         get_field(changeset, :is_external) == true
-        && get_field(changeset, :to_account) == nil
+        && get_field(changeset, :to_account_id) == nil
         and get_field(changeset, :type) == "withdraw"
       ) -> add_error(changeset, :type, "external transaction cannot be withdraw")
       (
@@ -83,22 +83,12 @@ defmodule FinancialTransactions.Accounts.Transaction do
   end
 
   defp check_transaction_amounts(
-    %Ecto.Changeset{changes: %{type: "transfer", is_external: true}} = changeset
+    %Ecto.Changeset{changes: %{type: "transfer"}} = changeset
   ) do
     if (
       get_field(changeset, :is_external) == true
       && has_amounts?(changeset)
     ) do
-      checks_transfer_amounts_values(changeset)
-    else
-      changeset
-    end
-  end
-
-  defp check_transaction_amounts(
-    %Ecto.Changeset{changes: %{type: "transfer", is_external: false}} = changeset
-  ) do
-    if has_amounts?(changeset) do
       checks_transfer_amounts_values(changeset)
     else
       changeset
@@ -117,6 +107,7 @@ defmodule FinancialTransactions.Accounts.Transaction do
   end
 
   defp check_transaction_amounts(changeset) do
+    IO.inspect(changeset)
     changeset
   end
 
@@ -157,13 +148,17 @@ defmodule FinancialTransactions.Accounts.Transaction do
     reduce_initial_value = Decimal.from_float(0.0)
     credit_sum = Enum.reduce(amounts["credit"], reduce_initial_value, fn(i, acc) -> Decimal.add(i.amount, acc) end )
     debit_sum = Enum.reduce(amounts["debit"], reduce_initial_value, fn(i, acc) -> Decimal.add(i.amount, acc) end )
+
     transaction_value = get_field(changeset, :value)
 
     if transaction_value != 0 do
       add_error(changeset, :value, "transaction hasn't a value")
     end
 
-    if credit_sum == debit_sum && debit_sum == transaction_value do
+    if (
+      Decimal.compare(credit_sum,  debit_sum) == Decimal.new(0)
+      && Decimal.compare(debit_sum,  transaction_value) == Decimal.new(0)
+    ) do
       changeset
     else
       add_error(changeset, :amounts, "transaction value and amount values (credit and debit) must be equals")
@@ -181,7 +176,7 @@ defmodule FinancialTransactions.Accounts.Transaction do
       fn(amount, acc) -> Decimal.add(amount, acc) end
     )
 
-    if debit_sum == transaction_value do
+    if Decimal.compare(debit_sum,  transaction_value) == Decimal.new(0) do
       changeset
     else
       add_error(changeset, :amounts, "transaction value and amount(debit) values must be equals")
