@@ -8,7 +8,7 @@ defmodule FinancialTransactions.UsersTest do
 
     @initial_value Decimal.from_float(1000.0)
 
-    @user_with_account_attrs build_attrs(:user_with_account)
+    @user_with_account_attrs build_attrs(:user_with_account_non_initial_value)
     @user_with_invalid_email build_attrs(:user_with_invalid_email)
 
     test "test the basic user creation with associated account which initial balance starts with R$1000.0" do

@@ -5,7 +5,6 @@ defmodule FinancialTransactions.AccountsTest do
 
   describe "accounts" do
     alias FinancialTransactions.Accounts.Account
-    alias FinancialTransactions.Repo
 
     @account_attrs %{name: "account test name", current_balance: "120.5"}
     @update_attrs %{current_balance: "456.7"}

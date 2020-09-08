@@ -2,9 +2,23 @@ defmodule FinancialTransactions.TestHelpers do
   alias FinancialTransactions.Companies.Company
   alias FinancialTransactions.Users.User
   alias FinancialTransactions.Repo
-  alias FinancialTransactions.Users
 
-  def build_attrs(:user_with_account) do
+  def build_attrs(:user_with_account_initial_value) do
+    %{
+      email: "test@gmail.com",
+      first_name: "John",
+      last_name: "Doe",
+      password: "123456Gg",
+      accounts: [
+        %{
+          name: "account with user",
+          current_balance: 1000.0,
+        },
+      ],
+    }
+  end
+
+  def build_attrs(:user_with_account_non_initial_value) do
     %{
       email: "test@gmail.com",
       first_name: "John",
@@ -45,10 +59,13 @@ defmodule FinancialTransactions.TestHelpers do
     company |> Repo.preload(:accounts)
   end
 
-  def user_with_account_fixture(attrs \\ build_attrs(:user_with_account)) do
+  def user_with_account_fixture(attrs \\ build_attrs(:user_with_account_initial_value)) do
     company_fixture()
-    {:ok, data} = Users.create_user(attrs)
-    data.user
+    {:ok, user} =
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert
+    user
   end
 
 end
