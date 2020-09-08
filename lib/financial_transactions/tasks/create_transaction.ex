@@ -38,7 +38,6 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
 
   def run(attrs, user \\ %User{}, company \\ %Company{}) do
     {amount_attrs, transacion_attrs} = unpack_amounts(attrs)
-
     transaction_changeset = transaction_changeset(transacion_attrs)
 
     if transaction_changeset.valid? do
@@ -61,16 +60,20 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
           {:error, Ecto.Changeset.add_error(
             transaction_changeset,
             :amounts,
-            "Transaction cannot have amounts")
+            "Transaction must have amounts")
           }
 
         {:ok, transaction} = transaction_changeset |> Repo.insert ->
+
           case process_transaction(transaction, amount_attrs) do
             {:ok, transaction_items} -> {:ok, transaction_items}
 
+            {:error, _, changeset, _} -> {:error, changeset}
+
             {:error, %Ecto.Changeset{} = changeset} -> {:error, changeset}
 
-            {:error, :invalid_balance} -> {:error, :invalid_balance}
+            {:error, :invalid_balance} ->
+              {:error, Ecto.Changeset.add_error(transaction_changeset, :value, "insufficient funds")}
           end
       end
 
