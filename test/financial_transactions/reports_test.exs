@@ -1,11 +1,11 @@
 defmodule FinancialTransactions.ReportsTest do
   use FinancialTransactions.DataCase
   import FinancialTransactions.TestHelpers
-  alias FinancialTransactionsWeb.Transactions
+  alias FinancialTransactions.Transactions
   alias FinancialTransactions.Reports
 
   setup do
-    user_one = user_with_account_fixture()
+    user_one = user_fixture(build_attrs(:user_with_account_initial_value))
 
     user_two_attrs =  %{
       email: "testone@gmail.com",
@@ -20,7 +20,7 @@ defmodule FinancialTransactions.ReportsTest do
       ],
     }
 
-    user_two = user_with_account_fixture(user_two_attrs)
+    user_two = user_fixture(user_two_attrs)
 
     user_one_account = List.first(user_one.accounts)
     user_two_account = List.first(user_two.accounts)
@@ -134,6 +134,7 @@ defmodule FinancialTransactions.ReportsTest do
          []}
       ]
     end
+
   end
 
 end

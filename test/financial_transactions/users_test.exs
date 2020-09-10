@@ -4,6 +4,7 @@ defmodule FinancialTransactions.UsersTest do
   alias FinancialTransactions.Users
   import FinancialTransactions.TestHelpers
 
+
   describe "users" do
 
     @initial_value Decimal.from_float(1000.0)

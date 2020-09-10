@@ -1,10 +1,10 @@
 defmodule FinancialTransactions.TransactionsTest do
   use FinancialTransactions.DataCase
   import FinancialTransactions.TestHelpers
-  alias FinancialTransactionsWeb.Transactions
+  alias FinancialTransactions.Transactions
 
   setup do
-    user_one = user_with_account_fixture()
+    user_one = user_fixture(build_attrs(:user_with_account_initial_value))
     user_two_attrs =  %{
       email: "testone@gmail.com",
       first_name: "Kate",
@@ -18,12 +18,13 @@ defmodule FinancialTransactions.TransactionsTest do
       ],
     }
 
-    user_two = user_with_account_fixture(user_two_attrs)
+    user_two = user_fixture(user_two_attrs)
     {:ok, [user_one: user_one, user_two: user_two]}
   end
 
   describe "transactions" do
     test "test internal transfer case", context do
+      company_fixture()
       user_one = context[:user_one]
       user_one_account = List.first(user_one.accounts)
 
@@ -79,12 +80,12 @@ defmodule FinancialTransactions.TransactionsTest do
               Decimal.from_float(transaction_attrs.value)) == Decimal.new(0)
             assert amount.transaction_id == transaction.id
         end
-
       end)
 
     end
 
     test "test withdraw case", context do
+      company_fixture()
       user_one = context[:user_one]
       user_one_account = List.first(user_one.accounts)
 
@@ -122,6 +123,7 @@ defmodule FinancialTransactions.TransactionsTest do
     end
 
     test "external transaction case", context do
+      company_fixture()
       user_one = context[:user_one]
       user_one_account = List.first(user_one.accounts)
 
