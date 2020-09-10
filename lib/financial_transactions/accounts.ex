@@ -51,7 +51,7 @@ defmodule FinancialTransactions.Accounts do
   """
   def create_account(attrs \\ %{}) do
     %Account{}
-    |> Account.changeset(attrs)
+    |> Account.single_create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -103,7 +103,5 @@ defmodule FinancialTransactions.Accounts do
   def change_account(%Account{} = account, attrs \\ %{}) do
     Account.changeset(account, attrs)
   end
-
-  alias FinancialTransactions.Accounts.Account
 
 end
