@@ -24,7 +24,7 @@ defmodule FinancialTransactionsWeb.AccountControllerTest do
     {:ok, data}
   end
 
-  describe "index" do
+  describe "index account" do
 
     test "lists all accounts", %{valid_account_attrs: valid_account_attrs, staff_conn: conn} do
       account = account_fixture(valid_account_attrs)

@@ -25,11 +25,12 @@ defmodule FinancialTransactionsWeb.UserControllerTest do
       }
       conn = post(conn, "/api/v1/users", data)
 
+      IO.inspect(json_response(conn, 201))
       assert %{
-               "id" => id,
-               "email" => email,
-               "first_name" => first_name,
-               "last_name" => last_name,
+              #  "id" => id,
+               "email" => "gg@gmail.com",
+               "first_name" => "John",
+               "last_name" => "Doe",
              } = json_response(conn, 201)["data"]
     end
 
@@ -55,9 +56,25 @@ defmodule FinancialTransactionsWeb.UserControllerTest do
       conn = post(conn, "/api/v1/users", %{})
       assert json_response(conn, 401) == %{"message" => "Unathorized for this action"}
     end
+
   end
 
   describe "show" do
 
+    test "renders user",  %{staff_conn: conn, staff_user: staff_user} do
+      user_id = staff_user.id
+      conn = get(conn, Routes.user_path(conn, :show, user_id))
+      assert %{"id" => user_id} = json_response(conn, 200)["data"]
+    end
   end
+
+  describe "index" do
+
+    test "render users list", %{staff_conn: conn, staff_user: staff_user, non_staff_user: non_staff_user} do
+      conn = get(conn, Routes.user_path(conn, :index))
+      users = json_response(conn, 200)["data"]
+      assert Enum.map(users, &(&1["id"])) == [staff_user.id, non_staff_user.id]
+    end
+  end
+
 end
