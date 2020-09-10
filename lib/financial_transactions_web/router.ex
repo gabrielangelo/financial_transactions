@@ -18,18 +18,36 @@ defmodule FinancialTransactionsWeb.Router do
     plug FinancialTransactionsWeb.AuthAccessPipeline
   end
 
+  pipeline :ensure_user_is_staff do
+    plug :accepts, ["json"]
+    plug FinancialTransactionsWeb.PermissionsPlug
+  end
+
   scope "/api/v1", FinancialTransactionsWeb do
     pipe_through :api
 
     resources "/sign_in", SignInController, only: [:create]
   end
 
-  scope "/api/v1", FinancialTransactionsWeb, as: :api_v1 do
-    pipe_through :api_ensured_authenticated
+  scope "/api/v1", FinancialTransactionsWeb do
+    pipe_through [
+      :api,
+      :api_ensured_authenticated,
+      :ensure_user_is_staff,
+    ]
 
-    # resources "/users", UserController
-    resources "/transactions", TransactionController, only: [:create]
+    resources "/users", UserController, only: [:index, :create, :show]
+    resources "/accounts", AccountController
+  end
+
+  scope "/api/v1", FinancialTransactionsWeb, as: :api_v1 do
+    pipe_through [
+      :api,
+      :api_ensured_authenticated,
+    ]
+
     resources "/reports/extract", ExtractReportController, only: [:index]
+    resources "/transactions", TransactionController, only: [:index, :show]
   end
 
   # Enables LiveDashboard only for development

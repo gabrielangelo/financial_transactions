@@ -1,6 +1,6 @@
 defmodule FinancialTransactionsWeb.TransactionController do
   use FinancialTransactionsWeb, :controller
-  alias FinancialTransactionsWeb.Transactions
+  alias FinancialTransactions.Transactions
 
   action_fallback FinancialTransactionsWeb.FallbackController
 
