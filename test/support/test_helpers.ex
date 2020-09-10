@@ -113,10 +113,12 @@ defmodule FinancialTransactions.TestHelpers do
     non_staff_conn = authenticate(conn, non_staff_user)
 
     {:ok,
-      %{staff_conn: put_req_header(staff_conn, "accept", "application/json"),
-      non_staff_conn: put_req_header(non_staff_conn, "accept", "application/json"),
-      staff_user: staff_user,
-      non_staff_user: non_staff_user}
+      %{
+        staff_conn: put_req_header(staff_conn, "accept", "application/json"),
+        non_staff_conn: put_req_header(non_staff_conn, "accept", "application/json"),
+        staff_user: staff_user,
+        non_staff_user: non_staff_user
+      }
     }
   end
 end

@@ -25,7 +25,6 @@ defmodule FinancialTransactionsWeb.UserControllerTest do
       }
       conn = post(conn, "/api/v1/users", data)
 
-      IO.inspect(json_response(conn, 201))
       assert %{
               #  "id" => id,
                "email" => "gg@gmail.com",
@@ -63,7 +62,7 @@ defmodule FinancialTransactionsWeb.UserControllerTest do
 
     test "renders user",  %{staff_conn: conn, staff_user: staff_user} do
       user_id = staff_user.id
-      conn = get(conn, Routes.user_path(conn, :show, user_id))
+      conn = get(conn, Routes.api_v1_user_path(conn, :show, user_id))
       assert %{"id" => user_id} = json_response(conn, 200)["data"]
     end
   end
@@ -71,7 +70,7 @@ defmodule FinancialTransactionsWeb.UserControllerTest do
   describe "index" do
 
     test "render users list", %{staff_conn: conn, staff_user: staff_user, non_staff_user: non_staff_user} do
-      conn = get(conn, Routes.user_path(conn, :index))
+      conn = get(conn, Routes.api_v1_user_path(conn, :index))
       users = json_response(conn, 200)["data"]
       assert Enum.map(users, &(&1["id"])) == [staff_user.id, non_staff_user.id]
     end
