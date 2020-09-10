@@ -11,6 +11,8 @@ defmodule FinancialTransactions.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
+      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
+      test_coverage: [tool: ExCoveralls],
     ]
   end
 
@@ -48,6 +50,7 @@ defmodule FinancialTransactions.MixProject do
       {:bcrypt_elixir, "~> 2.0"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:guardian, "~> 2.0"},
+      {:excoveralls, "~> 0.10", only: :test},
     ]
   end
 
