@@ -10,16 +10,34 @@ defmodule FinancialTransactionsWeb.UserView do
     %{data: render_one(user, UserView, "user.json")}
   end
 
+  def render("create_user.json", %{user: user}) do
+    %{
+      data: %{
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        is_active: user.is_active,
+        accounts: Enum.map(user.accounts, fn acc ->
+          cond do
+            %FinancialTransactions.Accounts.Account{} = acc ->
+              acc.id
+            true -> acc
+          end
+        end),
+      }
+    }
+  end
+
   def render("user.json", %{user: user}) do
-    user = %{id: user.id,
+    %{
+      id: user.id,
       email: user.email,
       first_name: user.first_name,
       last_name: user.last_name,
       is_active: user.is_active,
       accounts: Enum.map(user.accounts, &(&1.id))
     }
-    %{
-      data: user
-    }
   end
+
 end

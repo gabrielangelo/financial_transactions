@@ -15,7 +15,7 @@ defmodule FinancialTransactionsWeb.UserController do
     with {:ok, data} <- Users.create_user(user_params) do
         conn
         |> put_status(:created)
-        |> render("user.json", user: data.user)
+        |> render("create_user.json", user: data.user)
     end
   end
 
