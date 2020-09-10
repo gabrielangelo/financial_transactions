@@ -24,11 +24,14 @@ defmodule FinancialTransactions.Users.User do
     timestamps()
   end
 
+  @fields [:email, :first_name, :last_name, :password, :with_default_account, :is_staff]
+  @required_fields [:email, :first_name, :last_name, :password]
+
   @doc false
   def changeset(%__MODULE__{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :first_name, :last_name, :password, :with_default_account])
-    |> validate_required([:email, :first_name, :last_name, :password])
+    |> cast(attrs, @fields)
+    |> validate_required(@required_fields)
     |> validate_required([:email])
     |> unique_email
     |> validate_password(:password)
@@ -56,7 +59,7 @@ defmodule FinancialTransactions.Users.User do
 
   defp put_assoc_default_account(changeset) do
     accounts = get_field(changeset, :accounts)
-    with_default_account = get_field(changeset, :accounts)
+    with_default_account = get_field(changeset, :with_default_account)
     if (
       (accounts == nil || Enum.empty?(accounts))
       && with_default_account

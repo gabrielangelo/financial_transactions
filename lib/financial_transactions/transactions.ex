@@ -1,4 +1,4 @@
-defmodule FinancialTransactionsWeb.Transactions do
+defmodule FinancialTransactions.Transactions do
   def create_transaction(attrs, user) do
     FinancialTransactions.Tasks.CreateTransaction.run(attrs, user)
   end
