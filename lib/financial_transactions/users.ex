@@ -7,7 +7,7 @@ defmodule FinancialTransactions.Users do
   alias FinancialTransactions.Repo
 
   alias FinancialTransactions.Users.User
-
+  alias FinancialTransactions.Accounts.Account
 
   @doc """
   Returns the list of users.
@@ -19,7 +19,9 @@ defmodule FinancialTransactions.Users do
 
   """
   def list_users do
-    Repo.all(User)
+    company_query = from(a in Account, where: a.is_active == true, select: a.id)
+    query = from(u in User, where: u.is_active == true, preload: [accounts: ^company_query])
+    Repo.all(query)
   end
 
   @doc """
