@@ -29,7 +29,7 @@ defmodule FinancialTransactionsWeb.Router do
     resources "/sign_in", SignInController, only: [:create]
   end
 
-  scope "/api/v1", FinancialTransactionsWeb do
+  scope "/api/v1", FinancialTransactionsWeb, as: :api_v1 do
     pipe_through [
       :api,
       :api_ensured_authenticated,
@@ -47,7 +47,7 @@ defmodule FinancialTransactionsWeb.Router do
     ]
 
     resources "/reports/extract", ExtractReportController, only: [:index]
-    resources "/transactions", TransactionController, only: [:index, :show]
+    resources "/transactions", TransactionController, only: [:index, :show, :create]
   end
 
   # Enables LiveDashboard only for development
