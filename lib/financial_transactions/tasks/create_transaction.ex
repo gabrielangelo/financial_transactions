@@ -36,20 +36,21 @@ defmodule FinancialTransactions.Tasks.CreateTransaction do
 
   end
 
+  defp get_company_accounts_ids(%Company{} = company) do
+    company
+      |> Repo.preload(:accounts)
+      |> Map.get(:accounts, [])
+      |> Enum.map(&(&1.id))
+  end
+
   def run(attrs, user \\ %User{}, company \\ %Company{}) do
     {amount_attrs, transacion_attrs} = unpack_amounts(attrs)
     transaction_changeset = transaction_changeset(transacion_attrs)
 
     if transaction_changeset.valid? do
-      user_accounts_ids = Enum.map(user.accounts, fn account -> account.id end)
-
-      company_account_ids = company
-      |> Repo.preload(:accounts)
-      |> Map.get(:accounts, [])
-      |> Enum.map(&(&1.id))
-
       cond do
-        transaction_changeset.changes.from_account_id not in user_accounts_ids ++ company_account_ids ->
+        transaction_changeset.changes.from_account_id not in
+        Enum.map(user.accounts, &(&1.id)) ++ get_company_accounts_ids(company) ->
           {:error, Ecto.Changeset.add_error(
             transaction_changeset,
             :from_account_id,

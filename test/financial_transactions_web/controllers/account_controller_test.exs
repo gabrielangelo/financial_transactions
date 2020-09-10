@@ -1,93 +1,83 @@
 defmodule FinancialTransactionsWeb.AccountControllerTest do
   use FinancialTransactionsWeb.ConnCase
 
-  alias FinancialTransactions.Accounts
-  alias FinancialTransactions.Accounts.Account
+  import FinancialTransactions.TestHelpers
 
-  @create_attrs %{
-    email_notification_status: 42,
-    is_external: true,
-    transaction_status: 42,
-    type: 42,
-    value: "120.5"
-  }
-  @update_attrs %{
-    email_notification_status: 43,
-    is_external: false,
-    transaction_status: 43,
-    type: 43,
-    value: "456.7"
-  }
-  @invalid_attrs %{email_notification_status: nil, is_external: nil, transaction_status: nil, type: nil, value: nil}
-
-  def fixture(:account) do
-    {:ok, account} = Accounts.create_account(@create_attrs)
-    account
-  end
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    {:ok, data} = build_authenticate_conns(conn)
+    %{
+      non_staff_user: non_staff_user
+    } = data
+
+    valid_account_attrs = %{
+      name: "test account",
+      user_id: non_staff_user.id
+    }
+    invalid_account_attrs = %{
+      name: "test account"
+    }
+
+    data = Map.merge(data,
+      %{valid_account_attrs: valid_account_attrs, invalid_account_attrs: invalid_account_attrs}
+    )
+    {:ok, data}
   end
 
   describe "index" do
-    test "lists all transactions", %{conn: conn} do
+
+    test "lists all accounts", %{valid_account_attrs: valid_account_attrs, staff_conn: conn} do
+      account = account_fixture(valid_account_attrs)
       conn = get(conn, Routes.account_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      accounts = json_response(conn, 200)["data"]
+      assert Enum.map(accounts, &(&1["id"]))== [account.id]
+    end
+  end
+
+  describe "show account" do
+    test "renders account when data is valid",  %{valid_account_attrs: valid_account_attrs, staff_conn: conn} do
+      account = account_fixture(valid_account_attrs)
+      account_id = account.id
+      conn = get(conn, Routes.account_path(conn, :show, account_id))
+      assert %{"id" => account_id} = json_response(conn, 200)["data"]
     end
   end
 
   describe "create account" do
-    test "renders account when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.account_path(conn, :create), account: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
-
-      conn = get(conn, Routes.account_path(conn, :show, id))
-
+    test "create account with valid attrs", %{valid_account_attrs: valid_account_attrs, staff_conn: conn} do
+      conn = post(conn, Routes.account_path(conn, :create), account: valid_account_attrs)
       assert %{
-               "id" => id,
-               "email_notification_status" => 42,
-               "is_external" => true,
-               "transaction_status" => 42,
-               "type" => 42,
-               "value" => "120.5"
-             } = json_response(conn, 200)["data"]
-    end
+        "id" => id,
+        "name" => name,
+        "user_id" => user_id
+      } = json_response(conn, 201)["data"]
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.account_path(conn, :create), account: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+    end
+    test "renders errors when data is invalid", %{invalid_account_attrs: invalid_account_attrs, staff_conn: conn} do
+      conn = post(conn, Routes.account_path(conn, :create), account: invalid_account_attrs)
+      assert json_response(conn, 400)["errors"] != %{}
     end
   end
 
   describe "update account" do
-    setup [:create_account]
+    test "renders account when data is valid", %{valid_account_attrs: valid_account_attrs, staff_conn: conn} do
+      account = account_fixture(valid_account_attrs)
+      conn = put(conn, Routes.account_path(conn, :update, account), account: %{name: "Ups account"})
+      account_id = account.id
+      assert %{"id" => ^account_id} = json_response(conn, 200)["data"]
 
-    test "renders account when data is valid", %{conn: conn, account: %Account{id: id} = account} do
-      conn = put(conn, Routes.account_path(conn, :update, account), account: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-      conn = get(conn, Routes.account_path(conn, :show, id))
+      conn = get(conn, Routes.account_path(conn, :show, account_id))
 
       assert %{
-               "id" => id,
-               "email_notification_status" => 43,
-               "is_external" => false,
-               "transaction_status" => 43,
-               "type" => 43,
-               "value" => "456.7"
+              "id" => id,
+              "name" => "Ups account"
              } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, account: account} do
-      conn = put(conn, Routes.account_path(conn, :update, account), account: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "delete account" do
-    setup [:create_account]
-
-    test "deletes chosen account", %{conn: conn, account: account} do
+    test "deletes chosen account", %{staff_conn: conn, valid_account_attrs: valid_account_attrs} do
+      account = account_fixture(valid_account_attrs)
       conn = delete(conn, Routes.account_path(conn, :delete, account))
       assert response(conn, 204)
 
@@ -97,8 +87,4 @@ defmodule FinancialTransactionsWeb.AccountControllerTest do
     end
   end
 
-  defp create_account(_) do
-    account = fixture(:account)
-    %{account: account}
-  end
 end
