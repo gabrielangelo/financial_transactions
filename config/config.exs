@@ -16,7 +16,8 @@ config :financial_transactions, FinancialTransactionsWeb.Endpoint,
   secret_key_base: "Pal5vaYmKUo5COEGn937YcTICCv9+Ipw3PNiYZBQYyFuzxHZiWMQHVhT6o6QsAqc",
   render_errors: [view: FinancialTransactionsWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: FinancialTransactions.PubSub,
-  live_view: [signing_salt: "KPo8aCZq"]
+  live_view: [signing_salt: "KPo8aCZq"],
+  server: true
 
 # Configures Elixir's Logger
 config :logger, :console,
