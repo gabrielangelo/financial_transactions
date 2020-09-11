@@ -1,0 +1,15 @@
+
+{
+    "skip_files": [
+        "test/",
+        "lib/financial_transactions_web/channels/",
+        "lib/financial_transactions_web/views/",
+        "lib/financial_transactions_web.ex",
+        "lib/bankapi/application.ex"
+    ],
+    "coverage_options": {
+        "treat_no_relevant_lines_as_covered": true,
+        "output_dir": "cover/",
+        "minimum_coverage": 80
+    }
+}
