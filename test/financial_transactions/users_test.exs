@@ -75,7 +75,6 @@ defmodule FinancialTransactions.UsersTest do
       user = user_fixture(build_attrs(:user_without_accounts))
       new_password = "12"
       assert {:error, changeset} = Users.update_user(user, %{password: new_password})
-      IO.inspect(changeset)
     end
 
   end

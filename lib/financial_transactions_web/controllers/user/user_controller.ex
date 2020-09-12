@@ -26,20 +26,4 @@ defmodule FinancialTransactionsWeb.UserController do
     end
   end
 
-  @spec update(any, map) :: any
-  def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Users.get_user!(id)
-
-    with {:ok, %User{} = user} <- Users.update_user(user, user_params) do
-      render(conn, "show.json", user: user)
-    end
-  end
-
-  def delete(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-
-    with {:ok, %User{}} <- Users.delete_user(user) do
-      send_resp(conn, :no_content, "")
-    end
-  end
 end
