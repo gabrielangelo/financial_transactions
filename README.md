@@ -17,7 +17,7 @@ Desafio técnico para criação de uma banking API utlizando Elixir.
 4. Relátorio de extrato bancário,  
 
 ## API
-- TODO
+- Importar a  [json doc](https://github.com/gabrielangelo/financial_transactions/blob/master/financial-transactions.postman_collection.json) no postman
 
 ## Setup
 
