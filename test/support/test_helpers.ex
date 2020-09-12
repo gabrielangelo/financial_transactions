@@ -74,6 +74,15 @@ defmodule FinancialTransactions.TestHelpers do
     }
   end
 
+  def build_attrs(:user_with_default_account_flag) do
+    %{email: "test@gmail.com",
+      first_name: "John",
+      last_name: "Doe",
+      password: "123456Gg",
+      with_default_account: true
+    }
+  end
+
   def company_fixture() do
     {:ok, company} =
     %Company{}
