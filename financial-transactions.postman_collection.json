@@ -1,0 +1,296 @@
+{
+	"info": {
+		"_postman_id": "0dd4879e-69a6-44c6-9a1f-37f28f2b42b0",
+		"name": "financial-transactions",
+		"description": "Documentação da API\n\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"\",\n    \"password\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/v1/sign_in",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"sign_in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listagem de usuários",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/api/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recuperar usuário",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/api/v1/users/{id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar usuário",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"test@gmail.com\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"password\": \"123456Gg\",\n    \"accounts\": [\n        {\n            \"name\": \"account with user\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/v1/users ",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"users "
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Listar contas bancárias",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/api/v1/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar conta ",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/v1/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar conta bancária",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"\",\n    \"user_id\": \"\" \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/v1/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar conta bancária",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4000/api/v1/accounts/{id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"accounts",
+						"{id}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Extrato bancário",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/v1/reports/extract/?account_id=ecc958d0-4ba5-4c2d-8cb0-d094ec6c49d9&start_date_range=2020-08-12&end_date_range=2020-08-31",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"reports",
+						"extract",
+						""
+					],
+					"query": [
+						{
+							"key": "account_id",
+							"value": "ecc958d0-4ba5-4c2d-8cb0-d094ec6c49d9"
+						},
+						{
+							"key": "start_date_range",
+							"value": "2020-08-12"
+						},
+						{
+							"key": "end_date_range",
+							"value": "2020-08-31"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Criar transação",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n        \"description\": \"Xbox One buying\",\n        \"type\": \"transfer\",\n        \"from_account_id\": \"{user_one_account.id}\",\n        \"to_account_id\": \"{user_two_account.id}\",\n        \"value\": 1000.0,\n        \"amounts\": [\n          {\n            \"amount\": 1000.0,\n            \"type\": \"debit\"\n          },\n          {\n            \"amount\": 500.0,\n            \"type\": \"credit\"\n          },\n          {\n            \"amount\": 500.0,\n            \"type\": \"credit\"\n          },\n        ]\n      }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/v1/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"v1",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
