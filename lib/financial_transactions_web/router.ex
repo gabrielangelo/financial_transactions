@@ -47,7 +47,7 @@ defmodule FinancialTransactionsWeb.Router do
     ]
 
     resources "/reports/extract", ExtractReportController, only: [:index]
-    resources "/transactions", TransactionController, only: [:index, :show, :create]
+    resources "/transactions", TransactionController, only: [:create]
   end
 
   # Enables LiveDashboard only for development
