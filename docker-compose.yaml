@@ -8,18 +8,18 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: demo_prod
-
+      POSTGRES_DB: ${DATABASE_DB}
   web:
+    network_mode: "host"
     image: financial-transactions-app
     restart: always
     ports:
-      - ${APP_PORT}:${APP_PORT}
+      - 4000:4000
     environment:
-      APP_PORT: ${APP_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
+      APP_PORT: 4000
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_HOST: localhost
+
     depends_on:
       - database

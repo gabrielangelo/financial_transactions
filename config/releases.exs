@@ -1,26 +1,41 @@
+# In this file, we load production configuration and secrets
+# from environment variables. You can also hardcode secrets,
+# although such is generally not recommended and you have to
+# remember to add this file to your .gitignore.
 import Config
 
-secret_key_base = System.fetch_env!("SECRET_KEY_BASE")
-app_port = System.fetch_env!("APP_PORT")
-app_hostname = System.fetch_env!("APP_HOSTNAME")
-db_user = System.fetch_env!("DB_USER")
-db_password = System.fetch_env!("DB_PASSWORD")
-db_host = System.fetch_env!("DB_HOST")
+database_url =
+  System.get_env("DATABASE_URL") ||
+    raise """
+    environment variable DATABASE_URL is missing.
+    For example: ecto://USER:PASS@HOST/DATABASE
+    """
 
-config :financial_transactions, FinancialTransactions.Endpoint,
-  http: [:inet6, port: String.to_integer(app_port)],
+config :financial_transactions, FinancialTransactions.Repo,
+  # ssl: true,
+  url: database_url,
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+  cache_static_manifest: "priv/static/cache_manifest.json"
+
+secret_key_base =
+  System.get_env("SECRET_KEY_BASE") ||
+    raise """
+    environment variable SECRET_KEY_BASE is missing.
+    You can generate one by calling: mix phx.gen.secret
+    """
+
+IO.inspect(String.to_integer(System.get_env("APP_PORT") || "4000"))
+
+config :financial_transactions, FinancialTransactionsWeb.Endpoint,
+  http: [:inet6, port: String.to_integer(System.get_env("APP_PORT") || "4000")],
   secret_key_base: secret_key_base
 
-config :financial_transactions,
-  app_port: app_port
-
-config :financial_transactions,
-  app_hostname: app_hostname
-
-# Configure your database
-config :financial_transactions, FinancialTransactions.Repo,
-  username: db_user,
-  password: db_password,
-  database: "financial_transactions_prod",
-  hostname: db_host,
-  pool_size: 10
+# ## Using releases (Elixir v1.9+)
+#
+# If you are doing OTP releases, you need to instruct Phoenix
+# to start each relevant endpoint:
+#
+config :financial_transactions, FinancialTransactionsWeb.Endpoint, server: true
+#
+# Then you can assemble a release by calling `mix release`.
+# See `mix help release` for more information.

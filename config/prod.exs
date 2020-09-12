@@ -25,7 +25,7 @@ config :financial_transactions, FinancialTransactionsWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
-config :financial_transactions, FinancialTransactions.Endpoint, server: false
+config :financial_transactions, FinancialTransactions.Endpoint, server: true
 
 # ## SSL Support
 #

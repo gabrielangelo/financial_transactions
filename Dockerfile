@@ -1,14 +1,14 @@
-FROM elixir:1.9.0-alpine AS build
+# File: my_app/Dockerfile
+FROM elixir:1.9-alpine as build
 
 # install build dependencies
-RUN apk add --no-cache build-base npm git python
+RUN apk add --update git build-base nodejs npm yarn python
 
-# prepare build dir
+RUN mkdir /app
 WORKDIR /app
 
-# install hex + rebar
-RUN mix local.hex --force && \
-    mix local.rebar --force
+# install Hex + Rebar
+RUN mix do local.hex --force, local.rebar --force
 
 # set build ENV
 ENV MIX_ENV=prod
@@ -16,30 +16,43 @@ ENV MIX_ENV=prod
 # install mix dependencies
 COPY mix.exs mix.lock ./
 COPY config config
-RUN mix do deps.get, deps.compile
+RUN mix deps.get --only $MIX_ENV
+RUN mix deps.compile
 
-COPY priv priv
+# build assets
+COPY assets assets
+RUN cd assets && npm install && npm run deploy
 RUN mix phx.digest
 
-# compile and build release
+# build project
+COPY priv priv
 COPY lib lib
-# uncomment COPY if rel/ exists
+RUN mix compile
+
+# build release
+# at this point we should copy the rel directory but
+# we are not using it so we can omit it
 # COPY rel rel
-RUN mix do compile, release
+RUN mix release
 
 # prepare release image
 FROM alpine:3.9 AS app
-RUN apk add --no-cache openssl ncurses-libs
 
+# install runtime dependencies
+RUN apk add --update bash openssl postgresql-client
+
+EXPOSE 4000
+ENV MIX_ENV=prod
+
+# prepare app directory
+RUN mkdir /app
 WORKDIR /app
 
-RUN chown nobody:nobody /app
-
-USER nobody:nobody
-
-COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/financial_transactions ./
+# copy release to app container
+COPY --from=build /app/_build/prod/rel/financial_transactions .
+COPY entrypoint.sh .
+RUN chown -R nobody: /app
+USER nobody
 
 ENV HOME=/app
-
-# Run the Phoenix app
-CMD ["./entrypoint.sh"]
+CMD ["bash", "/app/entrypoint.sh"]
