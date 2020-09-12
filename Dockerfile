@@ -23,6 +23,6 @@ RUN npm install
 RUN mix local.hex --force
 
 # Compile the project
-RUN mix do compile
+RUN mix deps.get
 
 CMD ["bash", "/app/entrypoint.sh"]
