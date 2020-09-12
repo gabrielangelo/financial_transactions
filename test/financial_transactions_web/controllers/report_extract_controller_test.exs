@@ -112,7 +112,7 @@ defmodule FinancialTransactions.ExtractReportControllerTest do
   end
 
   describe "Reports" do
-    test "test report controller", %{non_staff_conn: conn, user_one_account: user_one_account} do
+    test "test report controller", %{staff_conn: conn, user_one_account: user_one_account} do
       start_date_range = Date.to_iso8601(Date.add(Date.utc_today(), -1))
       end_date_range = Date.to_iso8601(Date.utc_today())
       account_id = user_one_account.id
