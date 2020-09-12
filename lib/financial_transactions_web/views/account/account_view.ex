@@ -11,7 +11,8 @@ defmodule FinancialTransactionsWeb.AccountView do
   end
 
   def render("account.json", %{account: account}) do
-    %{id: account.id,
+    %{
+      id: account.id,
       name: account.name,
       user_id: account.user_id,
       company_id: account.company_id

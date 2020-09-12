@@ -13,6 +13,5 @@ defmodule FinancialTransactions.Repo.Migrations.CreateAmounts do
 
       timestamps()
     end
-
   end
 end

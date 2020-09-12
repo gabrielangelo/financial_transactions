@@ -13,9 +13,9 @@ defmodule FinancialTransactionsWeb.UserController do
 
   def create(conn, %{"user" => user_params}) do
     with {:ok, data} <- Users.create_user(user_params) do
-        conn
-        |> put_status(:created)
-        |> render("create_user.json", user: data.user)
+      conn
+      |> put_status(:created)
+      |> render("create_user.json", user: data.user)
     end
   end
 
@@ -25,5 +25,4 @@ defmodule FinancialTransactionsWeb.UserController do
       nil -> {:error, :not_found}
     end
   end
-
 end

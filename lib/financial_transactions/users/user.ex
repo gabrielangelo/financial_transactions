@@ -60,10 +60,9 @@ defmodule FinancialTransactions.Users.User do
   defp put_assoc_default_account(changeset) do
     accounts = get_field(changeset, :accounts)
     with_default_account = get_field(changeset, :with_default_account)
-    if (
-      (accounts == nil || Enum.empty?(accounts))
-      && with_default_account
-    ) do
+
+    if (accounts == nil || Enum.empty?(accounts)) &&
+         with_default_account do
       first_name = get_field(changeset, :first_name)
       last_name = get_field(changeset, :last_name)
 
@@ -83,7 +82,9 @@ defmodule FinancialTransactions.Users.User do
     end)
   end
 
-  defp put_hash_password(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
+  defp put_hash_password(
+         %Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset
+       ) do
     change(changeset, %{password_hash: Bcrypt.hash_pwd_salt(password)})
   end
 
@@ -96,5 +97,4 @@ defmodule FinancialTransactions.Users.User do
   end
 
   defp strong_password?(_), do: {:error, "The password is too short"}
-
 end

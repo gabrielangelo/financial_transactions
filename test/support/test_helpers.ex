@@ -17,9 +17,9 @@ defmodule FinancialTransactions.TestHelpers do
       accounts: [
         %{
           name: "account with user",
-          current_balance: 1000.0,
-        },
-      ],
+          current_balance: 1000.0
+        }
+      ]
     }
   end
 
@@ -28,7 +28,7 @@ defmodule FinancialTransactions.TestHelpers do
       email: "non_email@gmail.com",
       first_name: "Simon",
       last_name: "B.A Phanton",
-      password: "123456Gg",
+      password: "123456Gg"
     }
   end
 
@@ -40,9 +40,9 @@ defmodule FinancialTransactions.TestHelpers do
       password: "123456Gg",
       accounts: [
         %{
-          name: "account with user",
-        },
-      ],
+          name: "account with user"
+        }
+      ]
     }
   end
 
@@ -59,8 +59,8 @@ defmodule FinancialTransactions.TestHelpers do
     %{
       name: "stone",
       accounts: [
-        %{name: "stone account", current_balance: Decimal.new(1000000000000000000000)},
-      ],
+        %{name: "stone account", current_balance: Decimal.new(1_000_000_000_000_000_000_000)}
+      ]
     }
   end
 
@@ -75,7 +75,8 @@ defmodule FinancialTransactions.TestHelpers do
   end
 
   def build_attrs(:user_with_default_account_flag) do
-    %{email: "test@gmail.com",
+    %{
+      email: "test@gmail.com",
       first_name: "John",
       last_name: "Doe",
       password: "123456Gg",
@@ -85,27 +86,30 @@ defmodule FinancialTransactions.TestHelpers do
 
   def company_fixture() do
     {:ok, company} =
-    %Company{}
-    |> Company.changeset(build_attrs(:company))
-    |> Repo.insert
+      %Company{}
+      |> Company.changeset(build_attrs(:company))
+      |> Repo.insert()
 
     company |> Repo.preload(:accounts)
   end
 
-  @spec user_fixture(:invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}) :: any
+  @spec user_fixture(:invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}) ::
+          any
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert
+      %User{}
+      |> User.changeset(attrs)
+      |> Repo.insert()
+
     user
   end
 
   def account_fixture(attrs \\ %{}) do
     {:ok, account} =
-    %Account{}
-    |> Account.changeset(attrs)
-    |> Repo.insert
+      %Account{}
+      |> Account.changeset(attrs)
+      |> Repo.insert()
+
     account
   end
 
@@ -118,16 +122,15 @@ defmodule FinancialTransactions.TestHelpers do
     staff_user = user_fixture(build_attrs(:staff_user))
     staff_conn = authenticate(conn, staff_user)
 
-    non_staff_user =  user_fixture(build_attrs(:user_without_accounts))
+    non_staff_user = user_fixture(build_attrs(:user_without_accounts))
     non_staff_conn = authenticate(conn, non_staff_user)
 
     {:ok,
-      %{
-        staff_conn: put_req_header(staff_conn, "accept", "application/json"),
-        non_staff_conn: put_req_header(non_staff_conn, "accept", "application/json"),
-        staff_user: staff_user,
-        non_staff_user: non_staff_user
-      }
-    }
+     %{
+       staff_conn: put_req_header(staff_conn, "accept", "application/json"),
+       non_staff_conn: put_req_header(non_staff_conn, "accept", "application/json"),
+       staff_user: staff_user,
+       non_staff_user: non_staff_user
+     }}
   end
 end

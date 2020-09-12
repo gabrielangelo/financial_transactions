@@ -18,13 +18,16 @@ defmodule FinancialTransactionsWeb.UserView do
         first_name: user.first_name,
         last_name: user.last_name,
         is_active: user.is_active,
-        accounts: Enum.map(user.accounts, fn acc ->
-          cond do
-            %FinancialTransactions.Accounts.Account{} = acc ->
-              acc.id
-            true -> acc
-          end
-        end),
+        accounts:
+          Enum.map(user.accounts, fn acc ->
+            cond do
+              %FinancialTransactions.Accounts.Account{} = acc ->
+                acc.id
+
+              true ->
+                acc
+            end
+          end)
       }
     }
   end
@@ -36,8 +39,7 @@ defmodule FinancialTransactionsWeb.UserView do
       first_name: user.first_name,
       last_name: user.last_name,
       is_active: user.is_active,
-      accounts: Enum.map(user.accounts, &(&1.id))
+      accounts: Enum.map(user.accounts, & &1.id)
     }
   end
-
 end

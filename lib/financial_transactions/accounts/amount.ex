@@ -25,5 +25,4 @@ defmodule FinancialTransactions.Accounts.Amount do
     |> assoc_constraint(:account)
     |> assoc_constraint(:transaction)
   end
-
 end

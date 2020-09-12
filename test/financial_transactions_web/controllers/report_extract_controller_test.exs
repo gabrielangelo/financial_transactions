@@ -1,10 +1,10 @@
-defmodule FinancialTransactions.ReportsTest do
-  use FinancialTransactions.DataCase
+defmodule FinancialTransactions.ExtractReportControllerTest do
+  use FinancialTransactionsWeb.ConnCase
+
   import FinancialTransactions.TestHelpers
   alias FinancialTransactions.Transactions
-  alias FinancialTransactions.Reports
 
-  setup do
+  setup %{conn: conn} do
     user_one = user_fixture(build_attrs(:user_with_account_initial_value))
 
     user_two_attrs = %{
@@ -103,38 +103,30 @@ defmodule FinancialTransactions.ReportsTest do
       Transactions.create_transaction(transaction, user_two)
     end)
 
-    {:ok, [user_one_account: user_one_account, user_two_account: user_two_account]}
+    {:ok, data} = build_authenticate_conns(conn)
+
+    data =
+      Map.merge(data, %{user_one_account: user_one_account, user_two_account: user_two_account})
+
+    {:ok, data}
   end
 
   describe "Reports" do
-    test "test extract report with dates in iso format string format", context do
-      user_one_account = context[:user_one_account]
+    test "test report controller", %{non_staff_conn: conn, user_one_account: user_one_account} do
+      start_date_range = Date.to_iso8601(Date.add(Date.utc_today(), -1))
+      end_date_range = Date.to_iso8601(Date.utc_today())
+      account_id = user_one_account.id
 
-      report_attrs = %{
-        "account_id" => user_one_account.id,
-        "start_date_range" => Date.add(Date.utc_today(), -1),
-        "end_date_range" => Date.utc_today()
+      query_params = %{
+        "account_id" => account_id,
+        "start_date_range" => start_date_range,
+        "end_date_range" => end_date_range
       }
 
-      {:ok, data} = Reports.extract_report(report_attrs)
-      assert data[:in][:total] == "R$1100.0"
-      assert data[:out][:total] == "R$250.0"
-    end
-
-    test "test extract report with date start bigger than date end", context do
-      user_one_account = context[:user_one_account]
-
-      report_attrs = %{
-        "account_id" => user_one_account.id,
-        "start_date_range" => Date.utc_today(),
-        "end_date_range" => Date.add(Date.utc_today(), -1)
-      }
-
-      {:error, changeset} = Reports.extract_report(report_attrs)
-
-      assert changeset.errors == [
-               start_date_range: {"start_date_range cannot be greater then end_date_range", []}
-             ]
+      conn = get(conn, Routes.api_v1_extract_report_path(conn, :index, query_params))
+      data = json_response(conn, 200)["data"]
+      assert data["in"]["total"] == "R$1100.0"
+      assert data["out"]["total"] == "R$250.0"
     end
   end
 end

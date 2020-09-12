@@ -4,9 +4,8 @@ defmodule FinancialTransactions.Tasks.MakeTransfer do
 
   def run(transaction, amount_attrs) do
     with transaction <- Common.load_assoc_accounts(transaction),
-      {from_account, to_account} <- {transaction.from_account, transaction.to_account},
-      true <- Common.has_credit?(from_account.current_balance, transaction.value) do
-
+         {from_account, to_account} <- {transaction.from_account, transaction.to_account},
+         true <- Common.has_credit?(from_account.current_balance, transaction.value) do
       if transaction.is_external do
         Manager.external_transfer(
           transaction,

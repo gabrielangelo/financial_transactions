@@ -33,7 +33,7 @@ defmodule FinancialTransactionsWeb.Router do
     pipe_through [
       :api,
       :api_ensured_authenticated,
-      :ensure_user_is_staff,
+      :ensure_user_is_staff
     ]
 
     resources "/users", UserController, only: [:index, :create, :show]
@@ -44,7 +44,7 @@ defmodule FinancialTransactionsWeb.Router do
   scope "/api/v1", FinancialTransactionsWeb, as: :api_v1 do
     pipe_through [
       :api,
-      :api_ensured_authenticated,
+      :api_ensured_authenticated
     ]
 
     resources "/transactions", TransactionController, only: [:create]

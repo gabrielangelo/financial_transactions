@@ -13,5 +13,4 @@ defmodule FinancialTransactionsWeb.TransactionController do
       |> render("transaction.json", transaction: operation.transaction_status_update)
     end
   end
-
 end

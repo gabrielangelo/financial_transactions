@@ -7,7 +7,8 @@ defmodule FinancialTransactionsWeb.TransactionView do
       description: transaction.description,
       status: transaction.status,
       value: transaction.value,
-      amounts: Enum.map(transaction.amounts, fn account -> account |> Map.take([:id, :type, :amount]) end),
+      amounts:
+        Enum.map(transaction.amounts, fn account -> account |> Map.take([:id, :type, :amount]) end),
       to_account_id: transaction.to_account_id,
       from_account_id: transaction.from_account_id
     }

@@ -39,7 +39,7 @@ defmodule FinancialTransactions.Users do
 
   """
   def get_user!(id) do
-    Repo.get_by(User, [id: id, is_active: true])
+    Repo.get_by(User, id: id, is_active: true)
     |> Repo.preload(:accounts)
   end
 
@@ -56,20 +56,20 @@ defmodule FinancialTransactions.Users do
 
   """
   def create_user(attrs \\ %{}) do
-
     case FinancialTransactions.Tasks.CreateUser.run(attrs) do
       {:ok, stack} ->
         transaction = stack.make_transaction
+
         user_data = %{
           user: stack.user,
-          account: transaction.to_account_update,
+          account: transaction.to_account_update
         }
+
         {:ok, user_data}
 
       {:error, changeset} ->
         {:error, changeset}
     end
-
   end
 
   @doc """

@@ -12,11 +12,12 @@ defmodule FinancialTransactions.Tasks.CreateUser do
   @initial_value 1000.0
 
   defp get_company() do
-    query = (
-      from c in Company, join: account in Account, where:
-      account.company_id == c.id and ilike(c.name, @bank_name),
-      preload: [accounts: account]
-    )
+    query =
+      from c in Company,
+        join: account in Account,
+        where: account.company_id == c.id and ilike(c.name, @bank_name),
+        preload: [accounts: account]
+
     company = List.first(Repo.all(query))
 
     if company do
@@ -24,11 +25,11 @@ defmodule FinancialTransactions.Tasks.CreateUser do
     else
       %{accounts: [%{id: nil}]}
     end
-
   end
 
   defp process_transaction(company, account, user) do
-    [company_account| _] = company.accounts
+    [company_account | _] = company.accounts
+
     %{
       description: "valor inicial da conta",
       type: "transfer",
@@ -37,19 +38,22 @@ defmodule FinancialTransactions.Tasks.CreateUser do
       value: @initial_value,
       to_account_id: account.id,
       amounts: [
-          %{amount: @initial_value, type: "debit"},
-          %{amount: @initial_value, type: "credit"},
-      ],
+        %{amount: @initial_value, type: "debit"},
+        %{amount: @initial_value, type: "credit"}
+      ]
     }
     |> FinancialTransactions.Tasks.CreateTransaction.run(user, company)
   end
 
   defp make_transaction(user) do
     with company <- get_company(),
-    [{:ok, stack}] <- Enum.map(user.accounts, fn account -> process_transaction(company, account, user) end) do
-        {:ok, stack}
+         [{:ok, stack}] <-
+           Enum.map(user.accounts, fn account -> process_transaction(company, account, user) end) do
+      {:ok, stack}
     else
-      [ {:error, %Ecto.Changeset{} = changeset} ] -> {:error, changeset}
+      [{:error, %Ecto.Changeset{} = changeset}] ->
+        {:error, changeset}
+
       nil ->
         {:error, :invalid_company}
     end
@@ -59,7 +63,7 @@ defmodule FinancialTransactions.Tasks.CreateUser do
     Ecto.Multi.new()
     |> Multi.insert(:user, user_transaction)
     |> Multi.run(:make_transaction, fn _repo, %{user: user} -> make_transaction(user) end)
-    |> Repo.transaction
+    |> Repo.transaction()
   end
 
   def run(user_attrs) do
@@ -74,7 +78,5 @@ defmodule FinancialTransactions.Tasks.CreateUser do
     else
       {:error, user_changeset}
     end
-
   end
-
 end

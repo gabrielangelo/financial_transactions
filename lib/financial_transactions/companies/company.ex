@@ -23,5 +23,4 @@ defmodule FinancialTransactions.Companies.Company do
     |> cast_assoc(:accounts, with: &FinancialTransactions.Accounts.Account.changeset/2)
     |> unique_constraint(:name)
   end
-
 end

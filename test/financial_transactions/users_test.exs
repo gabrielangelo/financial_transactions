@@ -4,9 +4,7 @@ defmodule FinancialTransactions.UsersTest do
   alias FinancialTransactions.Users
   import FinancialTransactions.TestHelpers
 
-
   describe "users" do
-
     @initial_value Decimal.from_float(1000.0)
 
     @user_with_account_attrs build_attrs(:user_with_account_non_initial_value)
@@ -20,7 +18,7 @@ defmodule FinancialTransactions.UsersTest do
       user = data.user
       account = data.account
 
-      assert user.first_name ==  @user_with_account_attrs.first_name
+      assert user.first_name == @user_with_account_attrs.first_name
       assert user.last_name == @user_with_account_attrs.last_name
       assert user.email == @user_with_account_attrs.email
       assert Bcrypt.verify_pass(@user_with_account_attrs.password, user.password_hash) == true
@@ -35,7 +33,6 @@ defmodule FinancialTransactions.UsersTest do
     end
 
     test "test user creation without main company account" do
-
       {:error, changeset} = Users.create_user(@user_with_account_attrs)
       assert changeset.valid? == false
       [from_account_id: _] = changeset.errors
@@ -63,7 +60,7 @@ defmodule FinancialTransactions.UsersTest do
       user = data.user
       account = data.account
 
-      assert user.first_name ==  @user_with_account_attrs.first_name
+      assert user.first_name == @user_with_account_attrs.first_name
       assert user.last_name == @user_with_account_attrs.last_name
       assert user.email == @user_with_account_attrs.email
       assert Bcrypt.verify_pass(@user_with_account_attrs.password, user.password_hash) == true
@@ -76,6 +73,5 @@ defmodule FinancialTransactions.UsersTest do
       new_password = "12"
       assert {:error, changeset} = Users.update_user(user, %{password: new_password})
     end
-
   end
 end

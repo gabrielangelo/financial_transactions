@@ -48,5 +48,4 @@ defmodule FinancialTransactions.Accounts.Account do
     add_error(changeset, :user_id, "Account must be vinculated at least one user or company")
     add_error(changeset, :company_id, "Account must be vinculated at least one user or company")
   end
-
 end

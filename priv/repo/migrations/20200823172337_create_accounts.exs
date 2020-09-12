@@ -11,6 +11,5 @@ defmodule FinancialTransactions.Repo.Migrations.CreateAccounts do
       add :user_id, references(:users, on_delete: :delete_all, type: :binary_id)
       timestamps()
     end
-
   end
 end

@@ -1,5 +1,5 @@
 defmodule FinancialTransactionsWeb.PermissionsPlug do
-  import  Plug.Conn
+  import Plug.Conn
   alias Repo
 
   def init(opts), do: opts
@@ -15,10 +15,10 @@ defmodule FinancialTransactionsWeb.PermissionsPlug do
 
   def authorize(conn, %{is_staff: false} = _user, :is_staff) do
     json_response = Phoenix.json_library().encode!(%{message: "Unathorized for this action"})
+
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(401, json_response)
     |> halt
   end
-
 end

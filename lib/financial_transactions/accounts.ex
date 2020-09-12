@@ -35,7 +35,7 @@ defmodule FinancialTransactions.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_account!(id), do: Repo.get_by!(Account, [id: id, is_active: true])
+  def get_account!(id), do: Repo.get_by!(Account, id: id, is_active: true)
 
   @doc """
   Creates a account.
@@ -103,5 +103,4 @@ defmodule FinancialTransactions.Accounts do
   def change_account(%Account{} = account, attrs \\ %{}) do
     Account.changeset(account, attrs)
   end
-
 end

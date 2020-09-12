@@ -15,12 +15,11 @@ defmodule FinancialTransactions.Common do
 
   def has_credit?(account_balance, transaction_value) do
     cmp = Decimal.compare(account_balance, transaction_value)
-    cmp in Enum.map(0..1, &(Decimal.new(&1)))
+    cmp in Enum.map(0..1, &Decimal.new(&1))
   end
 
   def update_transaction_amounts_changeset(transaction, attrs) do
     transaction
     |> Transaction.changeset(attrs)
   end
-
 end

@@ -16,11 +16,11 @@ config :financial_transactions, FinancialTransactions.Repo,
   url: database_url,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
 
-  # http: [
-  #   port: String.to_integer(System.get_env("PORT") || "4000"),
-  #   transport_options: [socket_opts: [:inet6]]
-  # ],
-  # secret_key_base: secret_key_base
+# http: [
+#   port: String.to_integer(System.get_env("PORT") || "4000"),
+#   transport_options: [socket_opts: [:inet6]]
+# ],
+# secret_key_base: secret_key_base
 
 # ## Using releases (Elixir v1.9+)
 #
