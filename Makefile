@@ -19,16 +19,21 @@ api_routes:
 coveralls: 
 	@mix coveralls
 
+setup:
+	@mix ecto.setup
+	@mix ecto.migrate
+	@mix test
+	@mix phx.server
+
 release: 
 	@mix phx.digest && MIX_ENV=prod mix release
 	@_build/prod/rel/financial_transactions/bin/financial_transactions eval FinancialTransactions.Release.migrate
 	@_build/prod/rel/financial_transactions/bin/financial_transactions start
 
 build_container:
-	@docker build -t financial-transactions-app .
 	@chmod +x entrypoint.sh
-	@docker run --rm   -e DATABASE_HOST=localhost -e SECRET_KEY_BASE=1 -e DATABASE_URL=ecto://postgres:postgres@localhost/financial_transactions_dev \
-	 --net=host financial-transactions-app
+	@docker-compose build
+	@docker-compose up
 
 init:
 	@docker-compose -f docker-compose.yaml up

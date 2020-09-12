@@ -1,58 +1,28 @@
-# File: my_app/Dockerfile
-FROM elixir:1.9-alpine as build
+# Use an official Elixir runtime as a parent image
+FROM elixir:latest
 
-# install build dependencies
-RUN apk add --update git build-base nodejs npm yarn python
+RUN apt-get update && \
+    apt-get install -y postgresql-client && \
+    apt-get install -y inotify-tools && \
+    apt-get install -y nodejs && \
+    curl -L https://npmjs.org/install.sh | sh && \
+    mix local.hex --force && \
+    mix archive.install hex phx_new 1.5.3 --force && \
+    mix local.rebar --force
 
+# Create app directory and copy the Elixir projects into it
 RUN mkdir /app
+COPY . /app
 WORKDIR /app
 
-# install Hex + Rebar
-RUN mix do local.hex --force, local.rebar --force
+RUN npm install
+# RUN node node_modules/brunch/bin/brunch build
 
-# set build ENV
-ENV MIX_ENV=prod
+# RUN cd assets && npm install
+# Install hex package manager
+RUN mix local.hex --force
 
-# install mix dependencies
-COPY mix.exs mix.lock ./
-COPY config config
-RUN mix deps.get --only $MIX_ENV
-RUN mix deps.compile
+# Compile the project
+RUN mix do compile
 
-# build assets
-COPY assets assets
-RUN cd assets && npm install && npm run deploy
-RUN mix phx.digest
-
-# build project
-COPY priv priv
-COPY lib lib
-RUN mix compile
-
-# build release
-# at this point we should copy the rel directory but
-# we are not using it so we can omit it
-# COPY rel rel
-RUN mix release
-
-# prepare release image
-FROM alpine:3.9 AS app
-
-# install runtime dependencies
-RUN apk add --update bash openssl postgresql-client
-
-EXPOSE 4000
-ENV MIX_ENV=prod
-
-# prepare app directory
-RUN mkdir /app
-WORKDIR /app
-
-# copy release to app container
-COPY --from=build /app/_build/prod/rel/financial_transactions .
-COPY entrypoint.sh .
-RUN chown -R nobody: /app
-USER nobody
-
-ENV HOME=/app
 CMD ["bash", "/app/entrypoint.sh"]

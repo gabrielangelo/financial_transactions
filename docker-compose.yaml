@@ -9,17 +9,24 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DATABASE_DB}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
   web:
     network_mode: "host"
-    image: financial-transactions-app
+    build: .
     restart: always
     ports:
       - 4000:4000
     environment:
+      MIX_ENV: dev
       APP_PORT: 4000
       SECRET_KEY_BASE: ${SECRET_KEY_BASE}
       DATABASE_URL: ${DATABASE_URL}
-      DATABASE_HOST: localhost
+      DB_HOST: localhost
+      DATABASE_DB: ${DATABASE_DB}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
     depends_on:
       - database
