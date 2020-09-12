@@ -37,6 +37,7 @@ defmodule FinancialTransactionsWeb.Router do
     ]
 
     resources "/users", UserController, only: [:index, :create, :show]
+    resources "/reports/extract", ExtractReportController, only: [:index]
     resources "/accounts", AccountController
   end
 
@@ -46,7 +47,6 @@ defmodule FinancialTransactionsWeb.Router do
       :api_ensured_authenticated,
     ]
 
-    resources "/reports/extract", ExtractReportController, only: [:index]
     resources "/transactions", TransactionController, only: [:create]
   end
 
