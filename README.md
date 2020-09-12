@@ -63,7 +63,7 @@ $ docker-compose up
 - **transactions**: Representa as transações realizadas em uma _account_, que por sua vez pode ter diversas operações associadas. O campo _type_ representa o tipo de operação e tem o seguinte domínio: 
    * transfer : Movimentação de recursos de uma conta para outra conta.
    * withdraw : Retirada de dinheiro da conta.
-- **amounts**: COleção de amounts correspondente ao valor da transação.
+- **amounts**: Coleção de amounts correspondente ao valor da transação.
 ## Testes
 
 Testes podem ser executados com o seguinte comando:
@@ -78,7 +78,7 @@ Pode-se ver a cobertura dos testes utilizando o seguinte commando:
 
 ```
 
-mix converalls
+mix coveralls
 
 ```
 
