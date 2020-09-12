@@ -56,16 +56,14 @@ $ docker-compose up
 
 ## Modelo
 
-![Modelo_ER]
+![Modelo_ER](https://github.com/gabrielangelo/financial_transactions/blob/master/schema.png)
 
-- **users**: Utiliza para acesso no sistema
-- **clients**: Clientes cadastrados no sistema, que podem possuir uma ou mais _accounts_. 
-- **accounts**: Representa as contas de um cliente, que por sua vez pode ter diversas _operations_ associadas.
-- **operations**: Representa as operações realizadas em uma _account_, que por sua vez pode ter diversas operações associadas. O campo _type_ representa o tipo de operação e tem o seguinte domínio: 
-   * _SAQUE_ : Retirada de dinheiro da conta.
-   * _TRANSFERENCIA_ : Movimentação de recursos de uma conta para outra.
-   * _CREDITO_ : Entrada de dinheiro na conta, que pode ser oriundo de uma _TRANSFERENCIA_, é referenciada pelo campo _origin_operation_id_.
-
+- **users**: Utiliza para acesso e realizações de operações.
+- **accounts**: Representa as contas de usuário.
+- **transactions**: Representa as transações realizadas em uma _account_, que por sua vez pode ter diversas operações associadas. O campo _type_ representa o tipo de operação e tem o seguinte domínio: 
+   * transfer : Movimentação de recursos de uma conta para outra conta.
+   * withdraw : Retirada de dinheiro da conta.
+- **amounts**: COleção de amounts correspondente ao valor da transação.
 ## Testes
 
 Testes podem ser executados com o seguinte comando:
