@@ -49,8 +49,11 @@ done
 #Create, migrate, and seed database if it doesn't exist.
 if [[ -z `psql -Atqc "\\list $DATABASE_DB"` ]]; then
   echo "Database $DATABASE_DB does not exist. Creating..."
+  mix ecto.setup
+
   echo "running migrations"
   mix ecto.migrate
+  
   echo "make seeds"
   mix run priv/repo/seeds.exs
   echo "Database $DATABASE_DB created."

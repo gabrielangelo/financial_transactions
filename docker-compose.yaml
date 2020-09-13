@@ -30,3 +30,10 @@ services:
 
     depends_on:
       - database
+  test:
+    build: .
+    command: mix test
+    environment:
+      - MIX_ENV=test
+    links:
+      - database

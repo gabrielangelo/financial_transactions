@@ -15,17 +15,6 @@ alias FinancialTransactions.Users.User
 alias FinancialTransactions.Repo
 
 
-company_attrs = %{
-  name: "stone",
-  accounts: [
-    %{name: "stone account", current_balance: Decimal.new(1_000_000_000_000_000_000_000)}
-  ]
-}
-
-%Company{}
-|> Company.changeset(company_attrs)
-|> Repo.insert()
-
 staff_user = %{
   first_name: "Jack",
   last_name: "London",
@@ -37,3 +26,16 @@ staff_user = %{
 %User{}
 |> User.changeset(staff_user)
 |> Repo.insert()
+
+
+company_attrs = %{
+  name: "stone",
+  accounts: [
+    %{name: "stone account", current_balance: Decimal.new(1_000_000_000_000_000_000_000)}
+  ]
+}
+
+%Company{}
+|> Company.changeset(company_attrs)
+|> Repo.insert()
+
