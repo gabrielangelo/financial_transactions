@@ -1,4 +1,7 @@
 defmodule FinancialTransactions.Accounts.Transaction do
+  @moduledoc """
+  Transactions schema
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,5 +1,5 @@
 defmodule FinancialTransactions.TransactionsTest do
-  use FinancialTransactions.DataCase
+  use FinancialTransactions.DataCase, async: true
   import FinancialTransactions.TestHelpers
   alias FinancialTransactions.Transactions
 
