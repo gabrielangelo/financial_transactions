@@ -6,10 +6,11 @@ use Mix.Config
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
 config :financial_transactions, FinancialTransactions.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "financial_transactions_test#{System.get_env("MIX_TEST_PARTITION")}",
-  hostname: "localhost",
+  username: System.get_env("DB_TEST_USER") || "postgres",
+  password: System.get_env("DB_TEST_PASSWORD") || "postgres",
+  database: System.get_env("DATABASE_TEST_DB") || "financial_transactions_dev_test",
+  hostname: System.get_env("DB_TEST_HOST") || "localhost",
+  port: System.get_env("DB_PORT") || 5432,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,

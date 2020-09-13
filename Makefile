@@ -23,6 +23,7 @@ setup:
 	@mix ecto.setup
 	@mix ecto.migrate
 	@mix test
+	@mix run priv/repo/seeds.exs
 	@mix phx.server
 
 release: 
