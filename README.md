@@ -66,7 +66,9 @@ $ docker-compose up
 - **amounts**: Coleção de amounts correspondente ao valor da transação.
 ## Testes
 
-Testes podem ser executados com o seguinte comando:
+Testes podem ser executados:
+
+local:
 
 ```
 
@@ -74,13 +76,28 @@ mix test
 
 ```
 
+usando docker:
+```
+
+docker-compose run --rm -e "MIX_ENV=test" web mix test
+
+```
+
 Pode-se ver a cobertura dos testes utilizando o seguinte commando:
+local:
 
 ```
 
 mix coveralls
 
 ```
+usando docker:
+```
+
+docker-compose run --rm -e "MIX_ENV=test" web mix coveralls
+
+```
+
 
 ## TODOs
 

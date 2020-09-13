@@ -20,6 +20,7 @@ coveralls:
 	@mix coveralls
 
 setup:
+	@mix deps.get
 	@mix ecto.setup
 	@mix ecto.migrate
 	@mix test
